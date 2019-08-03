@@ -128,7 +128,7 @@ public final class QueryUtils {
                 JSONObject saleInfo = obj.getJSONObject("saleInfo");
                 String saleability = saleInfo.getString("saleability");
                 double price;
-                String buyLink = "tete";
+                String buyLink = "";
                 if(saleability.equals("NOT_FOR_SALE")){
                     price = 0;
                 }else{

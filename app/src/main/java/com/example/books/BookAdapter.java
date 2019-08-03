@@ -3,6 +3,7 @@ package com.example.books;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,8 +48,8 @@ public class BookAdapter extends ArrayAdapter<Book> {
             price.setText("Price: $" + currentBook.getmPrice());
 
         Button buyButton = listItemView.findViewById(R.id.buy_button);
-        if(currentBook.getmImageLink().equals("tete")) {
-            buyButton.setVisibility(View.GONE);
+        if(currentBook.getmBuyLink().equals("")) {
+            buyButton.setText("Not available");
         }
         else {
             buyButton.setOnClickListener(new View.OnClickListener() {
