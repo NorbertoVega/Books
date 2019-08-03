@@ -52,6 +52,7 @@ public class BookAdapter extends ArrayAdapter<Book> {
             buyButton.setText("Not available");
         }
         else {
+            buyButton.setText("Buy!!");
             buyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

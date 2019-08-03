@@ -18,7 +18,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
 
     private static final int BOOK_LOADER_ID = 1;
-    private static final String BOOK_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=neruda&maxResults=10";
+    private static final String BOOK_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=neruda&maxResults=25";
     BookAdapter mBookAdapter;
 
     @Override

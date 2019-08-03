@@ -119,7 +119,13 @@ public final class QueryUtils {
                 for (int k = 0; categories != null &&k<categories.length(); k++){
                     categoriesString += categories.get(k) + " ";
                 }
-                String date = volumeInfo.getString("publishedDate");
+                String date = "";
+                try {
+                    date = volumeInfo.getString("publishedDate");
+                }catch (JSONException e){
+                    date = "unknown";
+                }
+
                 JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
                 String imLink = imageLinks.getString("smallThumbnail");
 
