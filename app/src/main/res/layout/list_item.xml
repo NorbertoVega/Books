@@ -30,28 +30,38 @@
             android:id="@+id/title_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             tools:text="Some neruda boring book ldsadasdasddas"
+            android:fontFamily="sans-serif-medium"
             android:textSize="16sp"
             android:textStyle="bold"/>
         <TextView
             android:id="@+id/author_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/white"
             tools:text="Author: Pablo neruda"/>
         <TextView
             android:id="@+id/date_published_text_view"
             android:layout_width="match_parent"
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif-medium"
             android:layout_height="wrap_content"
             tools:text="Published: 16/09/1985"/>
         <TextView
             android:id="@+id/category_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif-medium"
             tools:text="Category: Boredom"/>
         <TextView
             android:id="@+id/price_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/white"
             tools:text="Price: $875"/>
 
     </LinearLayout>

@@ -2,18 +2,23 @@ package com.example.books;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import android.app.LoaderManager;
+import android.content.Loader;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
 
+    private static final int BOOK_LOADER_ID = 1;
+    private static final String BOOK_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=neruda&maxResults=10";
     BookAdapter mBookAdapter;
 
     @Override
@@ -21,28 +26,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageView thumbnail = new ImageView(this);
-        thumbnail.setImageResource(R.drawable.content);
-        BitmapDrawable drawable = (BitmapDrawable) thumbnail.getDrawable();
-        Bitmap th = drawable.getBitmap();
-
-        Book b1 = new Book("http1", th,"hola","jose","23/03/99","misterio",890.6,"https://play.google.com/store/books/details?id=hpMoDwAAQBAJ&rdid=book-hpMoDwAAQBAJ&rdot=1&source=gbs_api");
-        Book b2 = new Book("http2", th,"ronaldo","tite","11/07/88","accion",150.6,"googleBooks.com");
-        Book b3 = new Book("http3", th,"tete","maria","23/03/56","fantasia",358.1,"amazon.com");
-
-        ArrayList<Book> books = new ArrayList<>();
-        books.add(b1);
-        books.add(b2);
-        books.add(b3);
-        books.add(b3);
-        books.add(b3);
-        books.add(b3);
-        books.add(b3);
-
         ListView booksListView = findViewById(R.id.list);
         ColorDrawable cd = new ColorDrawable(ContextCompat.getColor(this, R.color.back3));
         booksListView.setBackground(cd);
-        mBookAdapter = new BookAdapter(this,books);
+        mBookAdapter = new BookAdapter(this,new ArrayList<Book>());
         booksListView.setAdapter(mBookAdapter);
+
+        ConnectivityManager cm =
+                (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if(isConnected){
+            getLoaderManager().initLoader(BOOK_LOADER_ID,null,this);
+        }
+    }
+
+    @Override
+    public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
+        return new BookLoader(this, BOOK_REQUEST_URL);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Book>> loader, List<Book> data) {
+        if(data != null && !data.isEmpty()){
+            mBookAdapter.addAll(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Book>> loader) {
+        mBookAdapter.clear();
     }
 }

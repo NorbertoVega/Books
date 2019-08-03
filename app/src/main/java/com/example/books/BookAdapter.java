@@ -41,19 +41,26 @@ public class BookAdapter extends ArrayAdapter<Book> {
         author.setText("Author: " + currentBook.getmAuthor());
         date.setText("Published: "+ currentBook.getmPublishedDate());
         category.setText("Category: " + currentBook.getmCategory());
-        price.setText("Price: $" + currentBook.getmPrice());
+        if(currentBook.getmPrice() == 0)
+            price.setText("Not for sale.");
+        else
+            price.setText("Price: $" + currentBook.getmPrice());
 
         Button buyButton = listItemView.findViewById(R.id.buy_button);
-        buyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentBook.getmBuyLink()));
-                if(browserIntent.resolveActivity(getContext().getPackageManager()) != null){
-                    getContext().startActivity(browserIntent);
+        if(currentBook.getmImageLink().equals("tete")) {
+            buyButton.setVisibility(View.GONE);
+        }
+        else {
+            buyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentBook.getmBuyLink()));
+                    if (browserIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                        getContext().startActivity(browserIntent);
+                    }
                 }
-            }
-        });
-
+            });
+        }
         return listItemView;
     }
 
