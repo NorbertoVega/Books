@@ -105,20 +105,27 @@ public final class QueryUtils {
 
                 String title = volumeInfo.getString("title");
                 String authorString = "";
-                JSONArray authors =  volumeInfo.getJSONArray("authors");
-                for (int j = 0; j<authors.length(); j++){
-                    authorString += authors.get(j) + " " ;
+                JSONArray authors = null;
+                try {
+                    authors =  volumeInfo.getJSONArray("authors");
+                    for (int j = 0; j<authors.length(); j++){
+                        authorString += authors.get(j) + " " ;
+                    }
+                } catch (JSONException e){
+                    authorString = "unknown";
                 }
+                
                 String categoriesString = "";
                 JSONArray categories = null;
                 try{
                     categories =  volumeInfo.getJSONArray("categories");
+                    for (int k = 0; categories != null &&k<categories.length(); k++){
+                        categoriesString += categories.get(k) + " ";
+                    }
                 }catch (JSONException e){
                     categoriesString = "there is not information";
                 }
-                for (int k = 0; categories != null &&k<categories.length(); k++){
-                    categoriesString += categories.get(k) + " ";
-                }
+
                 String date = "";
                 try {
                     date = volumeInfo.getString("publishedDate");
