@@ -1,9 +1,5 @@
 package com.example.books;
 
-import android.graphics.Bitmap;
-import android.media.Image;
-import android.widget.ImageView;
-
 public class Book {
 
     private String mImageLink;

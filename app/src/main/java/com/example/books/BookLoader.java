@@ -2,7 +2,6 @@ package com.example.books;
 
 import android.content.Context;
 import android.content.AsyncTaskLoader;
-
 import java.util.List;
 
 public class BookLoader extends AsyncTaskLoader<List<Book>> {

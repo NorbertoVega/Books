@@ -2,10 +2,7 @@ package com.example.books;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +32,9 @@ public class BookAdapter extends ArrayAdapter<Book> {
         final Book currentBook = getItem(position);
 
         ImageView thumbnail = listItemView.findViewById(R.id.thumbnail_t_v);
-        String url = intoString(currentBook.getmImageLink(),"s",4);
 
-        Log.d("BookAdapter: ",url);
-        Glide.with(getContext()).load(currentBook.getmImageLink()).into(thumbnail);
+        if(!currentBook.getmImageLink().equals("no url"))
+            Glide.with(getContext()).load(currentBook.getmImageLink()).into(thumbnail);
 
         TextView title = listItemView.findViewById(R.id.title_text_view);
         TextView author = listItemView.findViewById(R.id.author_text_view);
@@ -81,9 +77,7 @@ public class BookAdapter extends ArrayAdapter<Book> {
         return listItemView;
     }
 
-    private String intoString(String textoReal, String textoInsert, int pos){
-        StringBuilder stringBuilder= new StringBuilder(textoReal);
-        stringBuilder.insert(pos,textoInsert);
-        return stringBuilder.toString();
-    }
+
+
+
 }

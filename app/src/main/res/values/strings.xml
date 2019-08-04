@@ -3,4 +3,6 @@
     <string name="API_key">AIzaSyBlVw0a-WK_1eWfGN4E5rTpX6slojieI7I</string>
     <string name="search_button">Search Books</string>
     <string name="buy_button">Buy!!</string>
+    <string name="no_internet">No Internet.</string>
+    <string name="no_books">No books founded.</string>
 </resources>

@@ -118,7 +118,7 @@ public final class QueryUtils {
                         categoriesString += categories.get(k) + " ";
                     }
                 }catch (JSONException e){
-                    categoriesString = "there is not information";
+                    categoriesString = "unknown";
                 }
 
                 String date;
@@ -128,19 +128,23 @@ public final class QueryUtils {
                     date = "unknown";
                 }
 
-                JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
-                String imLink = imageLinks.getString("smallThumbnail");
+                String imLink;
+                try {
+                    JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
+                    imLink = imageLinks.getString("smallThumbnail");
+                }catch (JSONException e){
+                    imLink="no url";
+                }
 
                 JSONObject saleInfo = obj.getJSONObject("saleInfo");
-                String saleability = saleInfo.getString("saleability");
                 double price;
                 String buyLink = "";
-                if(saleability.equals("NOT_FOR_SALE")){
-                    price = 0;
-                }else{
+                try{
                     JSONObject listPrice = saleInfo.getJSONObject("listPrice");
                     price = listPrice.getDouble("amount");
                     buyLink = saleInfo.getString("buyLink");
+                }catch (JSONException e){
+                    price = 0;
                 }
 
                 Book currentBook = new Book(imLink, title, authorString, date, categoriesString, price, buyLink);
