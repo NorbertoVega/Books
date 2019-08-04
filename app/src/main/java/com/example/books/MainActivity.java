@@ -18,7 +18,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
 
     private static final int BOOK_LOADER_ID = 1;
-    private static final String BOOK_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=neruda&maxResults=30";
+    private static final String BOOK_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=game+of+thrones&maxResults=15";
     BookAdapter mBookAdapter;
 
     @Override
@@ -32,6 +32,34 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBookAdapter = new BookAdapter(this,new ArrayList<Book>());
         booksListView.setAdapter(mBookAdapter);
 
+        ConnectivityManager cm =
+                (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if(isConnected){
+            getLoaderManager().initLoader(BOOK_LOADER_ID,null,this);
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mBookAdapter.clear();
+        ConnectivityManager cm =
+                (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if(isConnected){
+            getLoaderManager().initLoader(BOOK_LOADER_ID,null,this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mBookAdapter.clear();
         ConnectivityManager cm =
                 (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 

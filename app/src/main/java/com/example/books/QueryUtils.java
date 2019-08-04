@@ -1,15 +1,10 @@
 package com.example.books;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.Context;
 import android.util.Log;
-import android.widget.ImageView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +20,7 @@ public final class QueryUtils {
 
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
-    public static List<Book> fetchBookData(String requestUrl){
+    public static List<Book> fetchBookData(String requestUrl, Context context){
         URL url = createUrl(requestUrl);
         String jsonResponse = null;
         try {
@@ -33,7 +28,7 @@ public final class QueryUtils {
         } catch (IOException e){
             Log.e(LOG_TAG, "Error closing input stream", e);
         }
-        List<Book> books = extractBooks(jsonResponse);
+        List<Book> books = extractBooks(jsonResponse, context);
         return books;
     }
 
@@ -93,7 +88,7 @@ public final class QueryUtils {
         return output.toString();
     }
 
-    public static ArrayList<Book> extractBooks(String jsonResponse){
+    public static ArrayList<Book> extractBooks(String jsonResponse, Context context){
         ArrayList<Book> books = new ArrayList<>();
         try {
             JSONObject root = new JSONObject(jsonResponse);
@@ -105,7 +100,7 @@ public final class QueryUtils {
 
                 String title = volumeInfo.getString("title");
                 String authorString = "";
-                JSONArray authors = null;
+                JSONArray authors;
                 try {
                     authors =  volumeInfo.getJSONArray("authors");
                     for (int j = 0; j<authors.length(); j++){
@@ -114,9 +109,9 @@ public final class QueryUtils {
                 } catch (JSONException e){
                     authorString = "unknown";
                 }
-                
+
                 String categoriesString = "";
-                JSONArray categories = null;
+                JSONArray categories;
                 try{
                     categories =  volumeInfo.getJSONArray("categories");
                     for (int k = 0; categories != null &&k<categories.length(); k++){
@@ -126,7 +121,7 @@ public final class QueryUtils {
                     categoriesString = "there is not information";
                 }
 
-                String date = "";
+                String date;
                 try {
                     date = volumeInfo.getString("publishedDate");
                 }catch (JSONException e){
@@ -135,8 +130,6 @@ public final class QueryUtils {
 
                 JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
                 String imLink = imageLinks.getString("smallThumbnail");
-
-                Bitmap image = getBitmapFromUrl(imLink);
 
                 JSONObject saleInfo = obj.getJSONObject("saleInfo");
                 String saleability = saleInfo.getString("saleability");
@@ -150,7 +143,7 @@ public final class QueryUtils {
                     buyLink = saleInfo.getString("buyLink");
                 }
 
-                Book currentBook = new Book(imLink, image, title, authorString, date, categoriesString, price, buyLink);
+                Book currentBook = new Book(imLink, title, authorString, date, categoriesString, price, buyLink);
                 books.add(currentBook);
             }
         } catch (JSONException e){
@@ -159,16 +152,4 @@ public final class QueryUtils {
         return books;
     }
 
-    public static Bitmap getBitmapFromUrl(String url) {
-        String urldisplay = url;
-        Bitmap bmp = null;
-        try {
-            InputStream in = new java.net.URL(urldisplay).openStream();
-            bmp = BitmapFactory.decodeStream(in);
-        } catch (Exception e) {
-            Log.e("Error", e.getMessage());
-            e.printStackTrace();
-        }
-        return bmp;
-    }
 }
