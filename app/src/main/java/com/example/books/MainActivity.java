@@ -9,26 +9,33 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
 
     private static final int BOOK_LOADER_ID = 1;
-    private static final String BOOK_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=game+of+thrones&maxResults=25";
+    private String book_request_url;
+    private static final String BOOK_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=";
     BookAdapter mBookAdapter;
     private TextView emptyStateTextView;
     private ProgressBar mProgressBar;
+    private String input;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mProgressBar = findViewById(R.id.progress_bar);
+        mProgressBar.setVisibility(View.GONE);
 
         ListView booksListView = findViewById(R.id.list);
         ColorDrawable cd = new ColorDrawable(ContextCompat.getColor(this, R.color.back3));
@@ -39,6 +46,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         emptyStateTextView = findViewById(R.id.empty_view);
         booksListView.setEmptyView(emptyStateTextView);
 
+        Button searchButton = findViewById(R.id.search_button);
+        final EditText searchText = findViewById(R.id.edit_text_view);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                input = searchText.getText().toString();
+                Log.d("MainActivity: ",input);
+                if(!input.equals("")) {
+                    book_request_url = formHttpReq(input);
+                    Log.d("Http: ",book_request_url);
+                    startProcess();
+                }
+            }
+        });
+
+    }
+
+    public void startProcess(){
+        mProgressBar = findViewById(R.id.progress_bar);
+        mProgressBar.setVisibility(View.VISIBLE);
         ConnectivityManager cm =
                 (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -55,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
-        return new BookLoader(this, BOOK_REQUEST_URL);
+        return new BookLoader(this, book_request_url);
     }
 
     @Override
@@ -74,17 +101,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(Loader<List<Book>> loader) {
         mBookAdapter.clear();
     }
-    /*
-    private String formHttpReq(){
-        String httpReq;
 
+    private String formHttpReq(String input){
+        String httpReq = BOOK_REQUEST_URL;
+        int pos;
+        if(input.charAt(input.length()-1) == ' '){
+            input = input.substring(0,input.length()-1);
+        }
+        String inicio, fin;
+        while(input.contains(" ")) {
+            pos = input.indexOf(" ");
+            inicio = input.substring(0,pos);
+            fin = input.substring(pos+1);
+            input = inicio + "+" + fin;
+        }
 
+        httpReq += input;
+        httpReq += "&maxResults=25";
         return httpReq;
     }
-    */
-    private String intoString(String originalString, String texToInsert, int pos){
-        StringBuilder stringBuilder= new StringBuilder(originalString);
-        stringBuilder.insert(pos,texToInsert);
-        return stringBuilder.toString();
-    }
+
 }

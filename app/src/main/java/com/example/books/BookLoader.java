@@ -20,7 +20,6 @@ public class BookLoader extends AsyncTaskLoader<List<Book>> {
         forceLoad();
     }
 
-
     @Override
     public List<Book> loadInBackground() {
         if(mUrl == null)
