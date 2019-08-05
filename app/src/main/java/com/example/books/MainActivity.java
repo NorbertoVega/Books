@@ -56,8 +56,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if(!input.equals("")) {
                     book_request_url = formHttpReq(input);
                     startProcess();
-                }else
+                }else {
                     emptyStateTextView.setText(R.string.no_books);
+                    mBookAdapter.clear();
+                }
                 try {
                     InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
