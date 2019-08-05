@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -52,18 +53,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onClick(View view) {
                 input = searchText.getText().toString();
-                Log.d("MainActivity: ",input);
                 if(!input.equals("")) {
                     book_request_url = formHttpReq(input);
-                    Log.d("Http: ",book_request_url);
                     startProcess();
+                }else
+                    emptyStateTextView.setText(R.string.no_books);
+                try {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                } catch (Exception e) {
+                    // TODO: handle exception
                 }
             }
         });
-
     }
 
     public void startProcess(){
+        mBookAdapter.clear();
         mProgressBar = findViewById(R.id.progress_bar);
         mProgressBar.setVisibility(View.VISIBLE);
         ConnectivityManager cm =
@@ -72,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         if(isConnected){
-            getLoaderManager().initLoader(BOOK_LOADER_ID,null,this);
+            getLoaderManager().restartLoader(BOOK_LOADER_ID,null,this);
         }else {
             mProgressBar = findViewById(R.id.progress_bar);
             mProgressBar.setVisibility(View.GONE);
@@ -90,7 +96,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mProgressBar = findViewById(R.id.progress_bar);
         mProgressBar.setVisibility(View.GONE);
 
-        emptyStateTextView.setText(R.string.no_books);
+        if(data == null)
+            emptyStateTextView.setText(R.string.no_books);
 
         if(data != null && !data.isEmpty()){
             mBookAdapter.addAll(data);
@@ -100,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<List<Book>> loader) {
         mBookAdapter.clear();
+        Log.d("onloadReset: ", "reseteado");
     }
 
     private String formHttpReq(String input){
